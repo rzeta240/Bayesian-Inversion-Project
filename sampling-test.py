@@ -15,5 +15,8 @@ def mapping(a, b):
     
     return result
 
-plt.hist(mapping(x_0,v))
+r = mapping(x_0, v)
+
+plt.hist(r, bins = 30)
+plt.hist(x_0, bins = 31)
 plt.show()
