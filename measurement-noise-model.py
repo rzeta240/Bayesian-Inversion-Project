@@ -1,3 +1,5 @@
+# https://matplotlib.org/stable/gallery/mplot3d/surface3d.html#sphx-glr-gallery-mplot3d-surface3d-py
+
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
@@ -5,7 +7,7 @@ import scipy
 t_air = 22
 t_0 = 15
 lam = 3
-stdev = 1
+stdev = 3
 
 def temp_model(t):
     t = t_air + (t_0 - t_air)*np.exp(-t/lam)
@@ -17,23 +19,20 @@ def get_density(x, y):
 
     return p
 
-# https://matplotlib.org/stable/gallery/mplot3d/surface3d.html#sphx-glr-gallery-mplot3d-surface3d-py
-
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator
 
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 
-t = np.arange(0, 5, 0.1)
-T = np.arange(0, 1, 0.1)
+t = np.arange(0, 15, 0.1)
+T = np.arange(10, 25, 0.1)
 t, T= np.meshgrid(t, T)
-# p = get_density(t, T)
 
 p = t.copy()
 
-for i in range(len(t)):
-    for j in range(len(t[i])):
-        p[i][j] = get_density(t[i][0], T[i][0])
+for i in range(len(t[0])):
+    for j in range(len(t)):
+        p[j][i] = get_density(t[0][i], T[j][0])
 
 surf = ax.plot_surface(t, T, p, cmap=cm.coolwarm,
                        linewidth=0, antialiased=False)
