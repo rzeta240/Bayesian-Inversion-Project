@@ -82,40 +82,40 @@ fig, ax = plt.subplots()
 line, = ax.plot( x, y, lw=2 )
 ax.set_ylim(0, max(y) + 0.1)
 
-# fig.subplots_adjust(bottom = 0.25)
+fig.subplots_adjust(bottom = 0.25)
 
-# axr = fig.add_axes([0.24, 0.1, 0.65, 0.03])
-# r_slider = Slider(
-#     ax=axr,
-#     label='p_prior mean',
-#     valmin=1,
-#     valmax=10,
-#     valinit=r_exp,
-# )
-# axs_r = fig.add_axes([0.24, 0.04, 0.65, 0.03])
-# s_r_slider = Slider(
-#     ax=axs_r,
-#     label='p_prior std',
-#     valmin=0.01,
-#     valmax=1.5,
-#     valinit=s_r,
-# )
+axr = fig.add_axes([0.24, 0.1, 0.65, 0.03])
+r_slider = Slider(
+    ax=axr,
+    label='p_prior mean',
+    valmin=1,
+    valmax=10,
+    valinit=r_exp,
+)
+axs_r = fig.add_axes([0.24, 0.04, 0.65, 0.03])
+s_r_slider = Slider(
+    ax=axs_r,
+    label='p_prior std',
+    valmin=0.01,
+    valmax=1.5,
+    valinit=s_r,
+)
 
-# def update(val):
-#     global r_exp, s_r, i_exp
-#     r_exp = r_slider.val
-#     s_r = s_r_slider.val
+def update(val):
+    global r_exp, s_r, i_exp
+    r_exp = r_slider.val
+    s_r = s_r_slider.val
 
-#     i_exp = v_exp / r_exp
+    i_exp = v_exp / r_exp
 
-#     y = f(x)
+    y = f(x)
 
-#     line.set_ydata(y)
+    line.set_ydata(y)
 
-#     ax.set_ylim(0, max(0.5, max(y) + 0.1))
+    ax.set_ylim(0, max(0.5, max(y) + 0.1))
 
-# r_slider.on_changed(update)
-# s_r_slider.on_changed(update)
+r_slider.on_changed(update)
+s_r_slider.on_changed(update)
 
 z = x.copy()
 
