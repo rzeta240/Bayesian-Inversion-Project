@@ -16,6 +16,8 @@ tau = np.sqrt(g/l_1)
 
 theta1_0 = np.radians(90)
 theta2_0 = np.radians(20)
+omega1_0 = np.radians(0)
+omega2_0 = np.radians(0)
 
 def double_pendulum(t, y):
     theta1, theta2, omega1, omega2 = y
@@ -38,7 +40,7 @@ t_max = tau*20
 
 t_eval = np.linspace(0, t_max, 2000)
 
-sol = solve_ivp(double_pendulum, (0, t_max), [theta1_0, theta2_0, 0, 0], t_eval=t_eval)
+sol = solve_ivp(double_pendulum, (0, t_max), [theta1_0, theta2_0, omega1_0, omega2_0], t_eval=t_eval)
 
 print(sol)
 
