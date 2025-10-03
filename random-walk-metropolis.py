@@ -4,6 +4,7 @@ from numpy import random
 
 def density(x, u=0, s=1):
     return 1/(s * np.sqrt(2 * np.pi)) * np.exp(-1/2 * (x-u)**2)
+    # return np.cos(x)/2
 
 x = 0
 
