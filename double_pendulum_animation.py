@@ -38,7 +38,7 @@ def double_pendulum(t, y):
 
 t_max = tau*20
 
-t_eval = np.linspace(0, t_max, 2000)
+t_eval = np.arange(0, t_max, 0.02)
 
 sol = solve_ivp(double_pendulum, (0, t_max), [theta1_0, theta2_0, omega1_0, omega2_0], t_eval=t_eval)
 
@@ -73,7 +73,9 @@ def update(i):
     line.set_data(thisx, thisy)
     return line,
 
-ani = FuncAnimation(fig, update, frames=len(t_eval), init_func=init, blit=True, interval=15)
+td = (sol["t"][1] - sol["t"][0]) / tau * 1000
+
+ani = FuncAnimation(fig, update, frames=len(t_eval), init_func=init, blit=True, interval=td)
 
 # from matplotlib.animation import PillowWriter
 

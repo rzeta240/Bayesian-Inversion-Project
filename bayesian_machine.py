@@ -6,6 +6,12 @@ def normal_dist(x, u, s):
 
     return density
 
+def uniform(x, a, b):
+    if x >= a and x <= b:
+        return 1/(b-a)
+    else:
+        return 0
+
 def multivar_dist(x, u, s):
     k = len(x)
     
