@@ -35,12 +35,12 @@ def metropolis_sample_from_posterior(p_prior,
     for j in range(num_chains):
         chain = []
         
-        x = x_0
-        p = p_prior(np.array([x])) * p_likelihood(np.array([x]), measurements)
+        x = np.array(x_0)
+        p = p_prior(np.array([x])) * p_likelihood(x, measurements)
         for i in range(num_samples):
             new_x = x + random.multivariate_normal(np.array([0]*k), sample_jump)
             
-            new_p = p_prior(np.array([new_x])) * p_likelihood(np.array([new_x]), measurements)
+            new_p = p_prior(np.array([new_x])) * p_likelihood(new_x, measurements)
             
             move_chance = min(1, new_p / p)
             
