@@ -8,7 +8,7 @@ from bayesian_machine import normal_dist, uniform, metropolis_sample_from_poster
 g = 9.81
 
 m_1 = 1
-m_2 = 1
+m_2 = 1.7
 l_1 = 1
 l_2 = 1
 
@@ -42,13 +42,10 @@ def double_pendulum(t, y, mu, lam):
 def take_measurements(mu, lam):
 
     t_max = tau*5
-    print(mu)
 
     t_eval = np.arange(0, t_max, 0.02)
 
     sol = solve_ivp(lambda t, y: double_pendulum(t, y, mu, lam), (0, t_max), [theta1_0, theta2_0, omega1_0, omega2_0], t_eval=t_eval, method='BDF')
-
-    print(sol)
 
     measurements_theta = [
         [sol["y"][j][i*50] for j in range(2)] for i in range(1, 6)
@@ -100,32 +97,35 @@ def p_likelihood(u, d):
 
 # Get p_posterior
 
-samples = metropolis_sample_from_posterior(p_prior, p_likelihood, measurements, x_0 = [1])
+samples = metropolis_sample_from_posterior(p_prior, p_likelihood, measurements, x_0 = [1],
+                                           num_chains=4,
+                                           num_samples=2500,
+                                           warmup_samples=1250)
 
-# for i in range(len(samples)):
-#     chain = [v[0] for v in samples[i]]
-#     samples[i] = chain
+for i in range(len(samples)):
+    chain = [v[0] for v in samples[i]]
+    samples[i] = chain
 
-# all_samples = []
+all_samples = []
 
-# for chain in samples:
-#     all_samples += chain
+for chain in samples:
+    all_samples += chain
     
-# mean = np.mean(all_samples)
-# stddev = np.std(all_samples)
+mean = np.mean(all_samples)
+stddev = np.std(all_samples)
 
-# cols = ["blue"]
-# i = 0
+cols = ["blue"]
+i = 0
 
-# for chain in samples:
-#     col = cols[i]
-#     i = i + 1 if i + 1 < len(cols) else 0
-#     plt.hist(chain, density = True, bins=20, alpha = 1/len(samples), color=col)
+for chain in samples:
+    col = cols[i]
+    i = i + 1 if i + 1 < len(cols) else 0
+    plt.hist(chain, density = True, bins=20, alpha = 1/len(samples), color=col)
 
-# print(mean, stddev)
-# x = np.linspace(min(all_samples), max(all_samples), 100)
-# y = normal_dist(x, mean, stddev)
+print(mean, stddev)
+x = np.linspace(min(all_samples), max(all_samples), 100)
+y = normal_dist(x, mean, stddev)
 
-# plt.plot(x, y, lw = 4, color = "red")
+plt.plot(x, y, lw = 4, color = "red")
 
-# plt.show()
+plt.show()
