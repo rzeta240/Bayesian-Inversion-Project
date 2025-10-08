@@ -1,55 +1,52 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-r_exp = 5
+from bayesian_machine import multivar_dist, normal_dist, metropolis_sample_from_posterior, uniform
+
+r_exp = 9.99
 
 measurements = np.array([
-    [1, 0.194],
-    [2, 0.39],
-    [3, 0.585],
-    [4, 0.78],
-    [5, 0.975],
-    [6, 1.17],
-    [7, 1.366]
+    [0.997, 0.098],
+    [1.978, 0.197],
+    [2.96, 0.296],
+    [3.95, 0.395],
+    [4.94, 0.494],
+    [5.93, 0.593],
+    [6.92, 0.692],
+    [7.91, 0.791],
+    [8.89, 0.889],
+    [9.88, 0.988]
 ])
 
-v_exp = np.array([
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7
-])
+# measurements = np.array([
+#     [1, 0.194],
+#     [2, 0.39],
+#     [3, 0.585],
+#     [4, 0.78],
+#     [5, 0.975],
+#     [6, 1.17],
+#     [7, 1.366]  
+# ])
 
-s_v = float( 0.1 )
-s_i = float( 0.1 )
+s_d = float( 0.1 )
 s_r = float( 2 )
 
-def normal_dist(x, u, s):
-    density = 1 / ( s * np.sqrt( 2 * np.pi ) ) * np.exp( -1/2 * ( ( x - u ) / s ) ** 2 )
-
-    return density
-
 def p_prior(u):
-    density = normal_dist(u, r_exp, s_r)
+    density = uniform(u, 1, 20)
     
     return density
 
 def p_likelihood(u, d):
     density = []
     
-    i_exp = v_exp / u[0]
-    
-    for i in range( len( d ) ):
-        density.append( normal_dist( d[i][0], v_exp[i], s_v ) * normal_dist( d[i][1], i_exp[i], s_i ) )
+    for di in d:
+        distance = np.abs(u * di[1] - di[0]) / np.sqrt(1 + u**2)
+        
+        density.append( normal_dist( distance, 0, s_d ) )
         
     return np.prod(density)
 
-from bayesian_machine import metropolis_sample_from_posterior
-
-samples = metropolis_sample_from_posterior(p_prior, p_likelihood, measurements, x_0 = [r_exp])
+samples = metropolis_sample_from_posterior(p_prior, p_likelihood, measurements, x_0 = [r_exp], sample_jump=[[s_d]])
 
 for i in range(len(samples)):
     chain = [v[0] for v in samples[i]]
@@ -71,7 +68,7 @@ for chain in samples:
     i = i + 1 if i + 1 < len(cols) else 0
     plt.hist(chain, density = True, bins=20, alpha = 1/len(samples), color=col)
 
-print(mean, stddev)
+print(mean, stddev) # Get uncertainty for the fitting 
 x = np.linspace(min(all_samples), max(all_samples), 100)
 y = normal_dist(x, mean, stddev)
 
