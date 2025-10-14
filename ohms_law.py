@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from bayesian_machine import multivar_dist, normal_dist, metropolis_sample_from_posterior, uniform
+from bayesian_machine import normal_dist, metropolis_sample_from_posterior, uniform, log_metropolis, log_normal
 
 r_exp = 9.99
 
@@ -18,6 +18,24 @@ measurements = np.array([
     [9.88, 0.988]
 ])
 
+# v_exp = np.array([
+#   1,
+#   2,
+#   3,
+#   4,
+#   5,
+#   6,
+#   7,
+#   8,
+#   9,
+#   10  
+# ])
+
+v_exp = np.array([di[0] for di in measurements])
+
+def get_i_exp(r):
+    return v_exp / r
+
 # measurements = np.array([
 #     [1, 0.194],
 #     [2, 0.39],
@@ -28,25 +46,30 @@ measurements = np.array([
 #     [7, 1.366]  
 # ])
 
-s_d = float( 0.1 )
+s_v = float( 1 )
+s_i = float( 0.01 )
 s_r = float( 2 )
 
 def p_prior(u):
-    density = uniform(u, 1, 20)
+    density = log_normal( u, r_exp, s_r )
     
     return density
 
 def p_likelihood(u, d):
     density = []
     
-    for di in d:
-        distance = np.abs(u * di[1] - di[0]) / np.sqrt(1 + u**2)
+    i_exp = get_i_exp(u)
+    
+    for i in range( len( d ) ):
+        di = d[i]
+        vi = v_exp[i]
+        ii = i_exp[i]
         
-        density.append( normal_dist( distance, 0, s_d ) )
+        density.append( log_normal( di[0], vi, s_v ) + log_normal( di[1], ii, s_i ) )
         
-    return np.prod(density)
+    return np.sum(density)
 
-samples = metropolis_sample_from_posterior(p_prior, p_likelihood, measurements, x_0 = [r_exp], sample_jump=[[s_d]])
+samples = log_metropolis(p_prior, p_likelihood, measurements, x_0 = ["random", 5, 15], sample_jump=[[np.sqrt(s_v*s_i)]], warmup_samples=5000, num_samples=10000)
 
 for i in range(len(samples)):
     chain = [v[0] for v in samples[i]]
