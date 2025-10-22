@@ -18,20 +18,20 @@ measurements = np.array([
     [9.88, 0.988]
 ])
 
-# v_exp = np.array([
-#   1,
-#   2,
-#   3,
-#   4,
-#   5,
-#   6,
-#   7,
-#   8,
-#   9,
-#   10  
-# ])
+v_exp = np.array([
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10  
+])
 
-v_exp = np.array([di[0] for di in measurements])
+# v_exp = np.array([di[0] for di in measurements])
 
 def get_i_exp(r):
     return v_exp / r
