@@ -3,7 +3,10 @@ import matplotlib.pyplot as plt
 
 from bayesian_machine import normal_dist, metropolis_sample_from_posterior, uniform, log_metropolis, log_normal
 
-r_exp = 9.99
+import time
+start_time = time.time()
+
+r_exp = 10
 
 measurements = np.array([
     [0.997, 0.098],
@@ -69,7 +72,7 @@ def p_likelihood(u, d):
         
     return np.sum(density)
 
-samples = log_metropolis(p_prior, p_likelihood, measurements, x_0 = ["random", 5, 15], sample_jump=[[np.sqrt(s_v*s_i)]], warmup_samples=5000, num_samples=10000)
+samples = log_metropolis(p_prior, p_likelihood, measurements, x_0 = [5], sample_jump=[[np.sqrt(s_v*s_i)]], warmup_samples=5000, num_samples=10000)
 
 for i in range(len(samples)):
     chain = [v[0] for v in samples[i]]
@@ -96,5 +99,9 @@ x = np.linspace(min(all_samples), max(all_samples), 100)
 y = normal_dist(x, mean, stddev)
 
 plt.plot(x, y, lw = 4, color = "red")
+
+end_time = time.time()
+
+print(f"Execution time: {end_time - start_time:.3f}s")
 
 plt.show()

@@ -1,9 +1,13 @@
 import numpy as np
+from numpy import random
 
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
 from bayesian_machine import normal_dist, uniform, metropolis_sample_from_posterior
+
+import time
+start_time = time.time()
 
 g = 9.81
 
@@ -70,6 +74,20 @@ def take_measurements(mu, lam):
 
 measurements = take_measurements(mu, lam)
 
+# for m in measurements:
+#     print(m)
+
+for j in range(len( measurements )):
+    m = measurements[j]
+
+    new_m = [m[0], 0, 0, 0, 0]
+    for i in range(1, 5):
+        new_m[i] = m[i] + random.normal(scale = 0.1)
+    measurements[j] = new_m
+
+# for m in measurements:
+#     print(m)
+
 # Define densities. Let's guess mu, assuming lam is known
 
 def p_prior(u):
@@ -99,8 +117,8 @@ def p_likelihood(u, d):
 
 samples = metropolis_sample_from_posterior(p_prior, p_likelihood, measurements, x_0 = [1],
                                            num_chains=4,
-                                           num_samples=2500,
-                                           warmup_samples=1250)
+                                           num_samples=5000,
+                                           warmup_samples=2500)
 
 for i in range(len(samples)):
     chain = [v[0] for v in samples[i]]
@@ -127,5 +145,9 @@ x = np.linspace(min(all_samples), max(all_samples), 100)
 y = normal_dist(x, mean, stddev)
 
 plt.plot(x, y, lw = 4, color = "red")
+
+end_time = time.time()
+
+print(f"Execution time: {end_time - start_time:.3f}s")
 
 plt.show()
