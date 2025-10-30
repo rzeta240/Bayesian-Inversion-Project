@@ -150,4 +150,8 @@ end_time = time.time()
 
 print(f"Execution time: {end_time - start_time:.3f}s")
 
+plt.xlabel("Mass Ratio \u03BC")
+plt.ylabel("\u03C0_posterior Density")
+plt.title("Double Pendulum Mass Ratio Inversion")
+
 plt.show()

@@ -104,4 +104,8 @@ end_time = time.time()
 
 print(f"Execution time: {end_time - start_time:.3f}s")
 
+plt.xlabel("Resistance (k\u03A9)")
+plt.ylabel("\u03C0_posterior Density")
+plt.title("Ohm's Law Inversion")
+
 plt.show()
